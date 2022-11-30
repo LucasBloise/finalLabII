@@ -110,6 +110,7 @@ public class Controlador implements ActionListener {
                     }else{
                         JOptionPane.showMessageDialog(null, "Posicion Invalida");
                     }
+                    break;
                 case JUGADOR_2_UBICANDO_BARCOS:
                     if (jugador2.validarInsertarBarco(botonX, botonY)) {
                         boton.setIcon(ship);
