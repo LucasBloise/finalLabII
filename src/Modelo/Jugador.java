@@ -58,10 +58,7 @@ public class Jugador {
     }
     
      public boolean validarInsertarBarco(int posicionX, int posicionY) {  
-         if(tablero[posicionX][posicionY] == PosicionTablero.BARCO) {
-             return false;
-         }
-         return true;
+         return tablero[posicionX][posicionY] != PosicionTablero.BARCO;
     }
      
     public boolean termineDePosicionarBarcos() {  
@@ -82,5 +79,28 @@ public class Jugador {
             return false;
         }
  
+    }
+    
+     public boolean validarAtaque(int posicionX, int posicionY) {  
+         // True es que le pego a un barco, false le pego al Agua
+         if (tablero[posicionX][posicionY] == PosicionTablero.BARCO) {
+             tablero[posicionX][posicionY] = PosicionTablero.BARCO_HUNDIDO;
+             return true;
+         }else {
+             tablero[posicionX][posicionY] = PosicionTablero.DISPARO_REPETIDO;
+             return false;
+         }     
+    }
+     
+    public boolean meQuedanBarcos() {  
+         // True es que le quedan barcos, false no quedan barcos
+       for (int i = 0; i < TableroData.getCantidadFilas(); i++) {
+            for (int j = 0; j < TableroData.getCantidadColumnas(); j++) {
+                if (tablero[i][j] == PosicionTablero.BARCO) {
+                    return true;
+                }
+            }
+        }    
+       return false;
     }
 }

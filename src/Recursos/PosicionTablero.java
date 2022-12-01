@@ -15,4 +15,6 @@ package Recursos;
  public enum PosicionTablero {
     AGUA,
     BARCO,
+    BARCO_HUNDIDO,
+    DISPARO_REPETIDO
 }

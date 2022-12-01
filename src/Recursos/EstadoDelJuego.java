@@ -10,5 +10,7 @@ package Recursos;
  */
  public enum EstadoDelJuego {
     JUGADOR_1_UBICANDO_BARCOS,
-    JUGADOR_2_UBICANDO_BARCOS
+    JUGADOR_2_UBICANDO_BARCOS,
+    ATAQUE_JUGADOR_1,
+    ATAQUE_JUGADOR_2,
 }
