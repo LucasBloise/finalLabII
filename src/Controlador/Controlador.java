@@ -11,7 +11,7 @@ import Recursos.PosicionTablero;
 import Recursos.Utilidades;
 import Vista.MenuConfiguracion;
 import Vista.MenuInicial;
-import Vista.Tablero2;
+import Vista.Tablero;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -36,7 +36,7 @@ import javax.swing.JTable;
  */
 public class Controlador implements ActionListener {
 
-    public Controlador(MenuInicial menuInicial, MenuConfiguracion menuConfiguracion, Tablero2 tableroVista, Jugador jugador1, Jugador jugador2, TableroData tablero) {
+    public Controlador(MenuInicial menuInicial, MenuConfiguracion menuConfiguracion, Tablero tableroVista, Jugador jugador1, Jugador jugador2, TableroData tablero) {
         this.menuInicial = menuInicial;
         this.menuConfiguracion = menuConfiguracion;
         this.tableroVista = tableroVista;
@@ -47,7 +47,7 @@ public class Controlador implements ActionListener {
 
     MenuInicial menuInicial;
     MenuConfiguracion menuConfiguracion;
-    Tablero2 tableroVista;
+    Tablero tableroVista;
     Jugador jugador1;
     Jugador jugador2;
     TableroData tablero;
@@ -124,21 +124,30 @@ public class Controlador implements ActionListener {
                     break;
                 case ATAQUE_JUGADOR_1:
                     // ATAQUE BARCO JUGADOR 1
-                    if (jugador2.validarAtaque(botonX, botonY)) {
-                        JOptionPane.showMessageDialog(null, "Hundiste un Barco!");
+                    if (!jugador2.validarAtaqueRepetido(botonX, botonY)) {
+                        if (jugador2.validarAtaque(botonX, botonY)) {
+                            JOptionPane.showMessageDialog(null, "Hundiste un Barco!");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Disparo al agua");
+                        }
                     } else {
-                        JOptionPane.showMessageDialog(null, "Disparo al agua");
+                        JOptionPane.showMessageDialog(null, "Disparo Repetido");
                     }
+
                     validarEstadoDelJuego();
                     break;
                 case ATAQUE_JUGADOR_2:
                     // ATAQUE BARCO JUGADOR 2
-                    
-                    if (jugador1.validarAtaque(botonX, botonY)) {
-                        JOptionPane.showMessageDialog(null, "Hundiste un Barco!");
+                    if (!jugador1.validarAtaqueRepetido(botonX, botonY)) {
+                        if (jugador1.validarAtaque(botonX, botonY)) {
+                            JOptionPane.showMessageDialog(null, "Hundiste un Barco!");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Disparo al agua");
+                        }
                     } else {
-                        JOptionPane.showMessageDialog(null, "Disparo al agua");
+                        JOptionPane.showMessageDialog(null, "Disparo Repetido");
                     }
+
                     validarEstadoDelJuego();
                     break;
 

@@ -19,6 +19,8 @@ public class Jugador {
 
     private String nombre;
     private int puntaje;
+    private int intentosFallidos;
+    private int intentos;
     private PosicionTablero[][] tablero;
 
     public String getNombre() {
@@ -90,6 +92,11 @@ public class Jugador {
              tablero[posicionX][posicionY] = PosicionTablero.DISPARO_REPETIDO;
              return false;
          }     
+    }
+     
+    public boolean validarAtaqueRepetido(int posicionX, int posicionY) {  
+        // True es que es un ataque repetido, false no lo es
+        return tablero[posicionX][posicionY] == PosicionTablero.DISPARO_REPETIDO;     
     }
      
     public boolean meQuedanBarcos() {  

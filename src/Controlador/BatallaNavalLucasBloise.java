@@ -8,7 +8,7 @@ import Modelo.Jugador;
 import Modelo.TableroData;
 import Vista.MenuConfiguracion;
 import Vista.MenuInicial;
-import Vista.Tablero2;
+import Vista.Tablero;
 
 /**
  *
@@ -23,7 +23,7 @@ public class BatallaNavalLucasBloise {
         
     MenuInicial menuInicial = new MenuInicial();
     MenuConfiguracion menuConfiguracion= new MenuConfiguracion();
-    Tablero2 tableroVista = new Tablero2();
+    Tablero tableroVista = new Tablero();
     Jugador jugador1 = new Jugador("Lucas", 0);
     Jugador jugador2 = new Jugador("Agus", 0);
     TableroData tablero = new TableroData(0, 0);

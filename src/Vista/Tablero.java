@@ -8,12 +8,12 @@ package Vista;
  *
  * @author lucasbloise
  */
-public class Tablero2 extends javax.swing.JFrame {
+public class Tablero extends javax.swing.JFrame {
 
     /**
      * Creates new form Tablero2
      */
-    public Tablero2() {
+    public Tablero() {
         initComponents();
     }
 
