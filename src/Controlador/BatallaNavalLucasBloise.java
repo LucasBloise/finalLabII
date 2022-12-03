@@ -6,9 +6,12 @@ package Controlador;
 
 import Modelo.Jugador;
 import Modelo.TableroData;
+import Vista.HistorialVista;
 import Vista.MenuConfiguracion;
 import Vista.MenuInicial;
+import Vista.PuntajeVista;
 import Vista.Tablero;
+import javax.swing.Timer;
 
 /**
  *
@@ -24,11 +27,13 @@ public class BatallaNavalLucasBloise {
     MenuInicial menuInicial = new MenuInicial();
     MenuConfiguracion menuConfiguracion= new MenuConfiguracion();
     Tablero tableroVista = new Tablero();
+    PuntajeVista puntajeVista = new PuntajeVista();
+     HistorialVista historialVista = new HistorialVista();
     Jugador jugador1 = new Jugador("Lucas", 0);
     Jugador jugador2 = new Jugador("Agus", 0);
     TableroData tablero = new TableroData(0, 0);
  
-    Controlador controlador = new Controlador(menuInicial, menuConfiguracion, tableroVista, jugador1, jugador2, tablero);
+    Controlador controlador = new Controlador(menuInicial, menuConfiguracion, tableroVista, puntajeVista,historialVista, jugador1, jugador2, tablero,new Timer(0, null));
     controlador.init();
     }
     

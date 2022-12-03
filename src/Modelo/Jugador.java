@@ -19,8 +19,9 @@ public class Jugador {
 
     private String nombre;
     private int puntaje;
-    private int intentosFallidos;
-    private int intentos;
+    private int intentosAgua = 0;
+    private int intentosRepetidos = 0;
+    private int intentos = 0;
     private PosicionTablero[][] tablero;
 
     public String getNombre() {
@@ -46,6 +47,15 @@ public class Jugador {
     public void setTablero(int cantidadFilas,int CantidadColumnas) {
         this.tablero = new PosicionTablero[cantidadFilas][CantidadColumnas];
     }
+    
+    public int getIntentos() {
+        return intentos;
+    }
+
+    public void setIntentos(int intentos) {
+        this.intentos = intentos;
+    }
+    
     
     public void llenarTableroconAgua(int cantidadFilas,int CantidadColumnas) {
         for (int i = 0; i < cantidadFilas; i++) {
@@ -83,20 +93,47 @@ public class Jugador {
  
     }
     
-     public boolean validarAtaque(int posicionX, int posicionY) {  
+     public boolean ejecutarAtaque(int posicionX, int posicionY) {  
          // True es que le pego a un barco, false le pego al Agua
+         this.intentos += 1;
          if (tablero[posicionX][posicionY] == PosicionTablero.BARCO) {
              tablero[posicionX][posicionY] = PosicionTablero.BARCO_HUNDIDO;
              return true;
          }else {
-             tablero[posicionX][posicionY] = PosicionTablero.DISPARO_REPETIDO;
+             if(tablero[posicionX][posicionY] == PosicionTablero.AGUA) {
+               this.intentosAgua += 1;
+               tablero[posicionX][posicionY] = PosicionTablero.DISPARO_REPETIDO;
+             }else if(tablero[posicionX][posicionY] == PosicionTablero.DISPARO_REPETIDO){
+               this.intentosRepetidos += 1;  
+               tablero[posicionX][posicionY] = PosicionTablero.DISPARO_REPETIDO;
+             }else if (tablero[posicionX][posicionY] == PosicionTablero.BARCO_HUNDIDO) {
+                 this.intentosRepetidos += 1;  
+             }
+        
              return false;
          }     
     }
      
+     public int getBarcosHundidos() {  
+      int contadorBarcos = 0;
+         for (int i = 0; i < TableroData.getCantidadFilas(); i++) {
+            for (int j = 0; j < TableroData.getCantidadColumnas(); j++) {
+                if (tablero[i][j] == PosicionTablero.BARCO_HUNDIDO) {
+                    contadorBarcos += 1;
+                }
+            }
+        }    
+        return contadorBarcos;
+    }
+     
     public boolean validarAtaqueRepetido(int posicionX, int posicionY) {  
         // True es que es un ataque repetido, false no lo es
-        return tablero[posicionX][posicionY] == PosicionTablero.DISPARO_REPETIDO;     
+        return tablero[posicionX][posicionY] == PosicionTablero.DISPARO_REPETIDO  || tablero[posicionX][posicionY] == PosicionTablero.BARCO_HUNDIDO;     
+    }
+    
+    public boolean validarAtaqueAgua(int posicionX, int posicionY) {  
+        // True es que es un ataque repetido, false no lo es
+        return tablero[posicionX][posicionY] == PosicionTablero.AGUA;     
     }
      
     public boolean meQuedanBarcos() {  
@@ -109,5 +146,21 @@ public class Jugador {
             }
         }    
        return false;
+    }
+
+    public int getIntentosAgua() {
+        return intentosAgua;
+    }
+
+    public void setIntentosAgua(int intentosAgua) {
+        this.intentosAgua = intentosAgua;
+    }
+
+    public int getIntentosRepetidos() {
+        return intentosRepetidos;
+    }
+
+    public void setIntentosRepetidos(int intentosRepetidos) {
+        this.intentosRepetidos = intentosRepetidos;
     }
 }
