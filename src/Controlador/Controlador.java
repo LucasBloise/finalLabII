@@ -41,7 +41,7 @@ import javax.swing.Timer;
  */
 public class Controlador implements ActionListener {
 
-    public Controlador(MenuInicial menuInicial, MenuConfiguracion menuConfiguracion, Tablero tableroVista,PuntajeVista puntajeVista,HistorialVista historialVista ,Jugador jugador1, Jugador jugador2, TableroData tablero, Timer timer) {
+    public Controlador(MenuInicial menuInicial, MenuConfiguracion menuConfiguracion, Tablero tableroVista, PuntajeVista puntajeVista, HistorialVista historialVista, Jugador jugador1, Jugador jugador2, TableroData tablero, Timer timer) {
         this.menuInicial = menuInicial;
         this.menuConfiguracion = menuConfiguracion;
         this.tableroVista = tableroVista;
@@ -68,15 +68,15 @@ public class Controlador implements ActionListener {
     int segundos = 0;
     int minutos = 0;
     int horas = 0;
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
-    LocalDateTime now = LocalDateTime.now();  
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    LocalDateTime now = LocalDateTime.now();
 
     public void init() {
         // Archivos
         initArchivoDeGuardado("preferenciasJuego");
         initArchivoDeGuardado("historial");
         leerArchivoDeGuardadoPreferencias();
-        leerArchivoDeGuardadoHistorial("historial");
+        leerArchivoDeGuardadoHistorial();
         //MENU INICIAL ACTION LISTENERS
         menuInicial.getConfigButton().addActionListener(this);
         menuInicial.getPlayButton().addActionListener(this);
@@ -88,23 +88,21 @@ public class Controlador implements ActionListener {
         menuConfiguracion.getPlayer1NameTextField().addActionListener(this);
         menuConfiguracion.getPlayer2TextField().addActionListener(this);
         menuConfiguracion.getSaveButton().addActionListener(this);
-        
+
         // PUNTAJE VISTA INIT
         puntajeVista.getPlayer1Name().setText(jugador1.getNombre());
         puntajeVista.getPlayer2Name().setText(jugador2.getNombre());
-        
-        
 
         //VISIBILIDAD ACTION LISTENERS
         menuInicial.setVisible(true);
         tiempo.addActionListener(this);
-        
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-         
+
         if (source == menuInicial.getConfigButton()) {
             menuInicial.setVisible(false);
             menuConfiguracion.setVisible(true);
@@ -113,7 +111,7 @@ public class Controlador implements ActionListener {
             jugador2.setNombre(menuConfiguracion.getPlayer2TextField().getText());
             tablero.setCantidadFilas(Integer.parseInt(menuConfiguracion.getTableRowsTextField().getText()));
             tablero.setCantidadColumnas(Integer.parseInt(menuConfiguracion.getColumnsTableTextField().getText()));
-            guardarArchivoDeGuardadoPreferencias("preferenciasJuego");
+            guardarArchivoDeGuardadoPreferencias();
             menuInicial.setVisible(true);
             menuConfiguracion.setVisible(false);
         } else if (source == menuInicial.getPlayButton()) {
@@ -121,10 +119,9 @@ public class Controlador implements ActionListener {
             JOptionPane.showMessageDialog(null, "Turno de ubicar los barcos de " + jugador1.getNombre());
             menuInicial.setVisible(false);
             tableroVista.setVisible(true);
-            
 
-        }else if (source == menuInicial.getHistoryButton()) {
-            
+        } else if (source == menuInicial.getHistoryButton()) {
+
             menuInicial.setVisible(false);
             historialVista.setVisible(true);
         } else if (botones.contains(source)) {
@@ -159,7 +156,7 @@ public class Controlador implements ActionListener {
                     if (jugador2.validarAtaqueRepetido(botonX, botonY)) {
                         JOptionPane.showMessageDialog(null, "Disparo Repetido");
 
-                    } else if (jugador2.validarAtaqueAgua(botonX, botonY)){
+                    } else if (jugador2.validarAtaqueAgua(botonX, botonY)) {
                         JOptionPane.showMessageDialog(null, "Disparo al agua");
                     }
                     if (jugador2.ejecutarAtaque(botonX, botonY)) {
@@ -173,7 +170,7 @@ public class Controlador implements ActionListener {
                     if (jugador1.validarAtaqueRepetido(botonX, botonY)) {
                         JOptionPane.showMessageDialog(null, "Disparo Repetido");
 
-                    } else if (jugador1.validarAtaqueAgua(botonX, botonY)){
+                    } else if (jugador1.validarAtaqueAgua(botonX, botonY)) {
                         JOptionPane.showMessageDialog(null, "Disparo al agua");
                     }
                     if (jugador1.ejecutarAtaque(botonX, botonY)) {
@@ -183,19 +180,15 @@ public class Controlador implements ActionListener {
                     break;
 
             }
-             actualizarPuntajeVista();
-        }else if(source == tiempo){
-          actualizarVistaTiempo();
+            actualizarPuntajeVista();
+        } else if (source == tiempo) {
+            actualizarVistaTiempo();
         }
-        
-       
 
     }
-    
-    
 
     public void validarEstadoDelJuego() {
-        
+
         if (!hayUnGanador()) {
 
             // SI EL JUGADOR 1 TERMINO DE INGRESAR LOS BARCOS
@@ -208,7 +201,7 @@ public class Controlador implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Empieza el ataque entre jugadores");
                 tiempo.start();
                 puntajeVista.setVisible(true);
-                JOptionPane.showMessageDialog(null, "Le toca atacar a " + jugador1.getNombre() );
+                JOptionPane.showMessageDialog(null, "Le toca atacar a " + jugador1.getNombre());
                 limpiarMapa();
                 estadoDelJuego = EstadoDelJuego.ATAQUE_JUGADOR_1;
             } else if (estadoDelJuego.equals(EstadoDelJuego.ATAQUE_JUGADOR_1)) {
@@ -217,12 +210,12 @@ public class Controlador implements ActionListener {
                 renderizarMapaJugador(jugador1.getTablero());
             } else if (estadoDelJuego.equals(EstadoDelJuego.ATAQUE_JUGADOR_2)) {
                 estadoDelJuego = EstadoDelJuego.ATAQUE_JUGADOR_1;
-                JOptionPane.showMessageDialog(null, "Le toca atacar a " + jugador1.getNombre() );
+                JOptionPane.showMessageDialog(null, "Le toca atacar a " + jugador1.getNombre());
                 renderizarMapaJugador(jugador2.getTablero());
-                 
+
             }
-        }else{
-            
+        } else {
+
             volverAlMenuDeInicio();
         }
     }
@@ -230,12 +223,12 @@ public class Controlador implements ActionListener {
     public boolean hayUnGanador() {
         if (estadoDelJuego != EstadoDelJuego.JUGADOR_1_UBICANDO_BARCOS && estadoDelJuego != EstadoDelJuego.JUGADOR_2_UBICANDO_BARCOS) {
             if (!jugador1.meQuedanBarcos()) {
-                JOptionPane.showMessageDialog(null, "Gano el jugador 2");
-                guardarArchivoDeGuardadoHistorial(jugador1.getNombre() + " vs " + jugador2.getNombre() + " gano " + jugador2.getNombre() +" en " + dtf.format(now));
+                JOptionPane.showMessageDialog(null, "Gano " + jugador2.getNombre());
+                guardarArchivoDeGuardadoHistorial(jugador1.getNombre() + " vs " + jugador2.getNombre() + " gano " + jugador2.getNombre() + " en " + dtf.format(now));
                 return true;
             } else if (!jugador2.meQuedanBarcos()) {
-                JOptionPane.showMessageDialog(null, "Gano el jugador 1");
-                guardarArchivoDeGuardadoHistorial(jugador1.getNombre() + " vs " + jugador2.getNombre() + " gano " + jugador1.getNombre()+" en " + dtf.format(now));
+                JOptionPane.showMessageDialog(null, "Gano " + jugador1.getNombre());
+                guardarArchivoDeGuardadoHistorial(jugador1.getNombre() + " vs " + jugador2.getNombre() + " gano " + jugador1.getNombre() + " en " + dtf.format(now));
                 return true;
             }
         }
@@ -247,48 +240,43 @@ public class Controlador implements ActionListener {
             boton.setIcon(Utilidades.waterIcon);
         }
     }
-    
+
     public void renderizarMapaJugador(PosicionTablero[][] tablero) {
-        
-        
-        
+
         for (JButton boton : botones) {
             String[] posicionBoton = boton.getName().split(",");
             int botonX = Integer.parseInt(posicionBoton[0]);
             int botonY = Integer.parseInt(posicionBoton[1]);
-            
-            
+
             for (int i = 0; i < TableroData.getCantidadFilas(); i++) {
-            for (int j = 0; j < TableroData.getCantidadColumnas(); j++) {
-                if (i == botonX && j == botonY) {
-                    
-                    switch (tablero[i][j]) {
-                        case BARCO:
-                            boton.setIcon(Utilidades.waterIcon);
-                            break;
-                        case AGUA:
-                            boton.setIcon(Utilidades.waterIcon);
-                            break;
-                        case BARCO_HUNDIDO:
-                            boton.setIcon(Utilidades.shipDamegeIcon);
-                            break;
-                        case DISPARO_REPETIDO:
-                            boton.setIcon(Utilidades.waterSplashIcon);
-                            break;
+                for (int j = 0; j < TableroData.getCantidadColumnas(); j++) {
+                    if (i == botonX && j == botonY) {
+
+                        switch (tablero[i][j]) {
+                            case BARCO:
+                                boton.setIcon(Utilidades.waterIcon);
+                                break;
+                            case AGUA:
+                                boton.setIcon(Utilidades.waterIcon);
+                                break;
+                            case BARCO_HUNDIDO:
+                                boton.setIcon(Utilidades.shipDamegeIcon);
+                                break;
+                            case DISPARO_REPETIDO:
+                                boton.setIcon(Utilidades.waterSplashIcon);
+                                break;
+                        }
                     }
                 }
             }
-        }
-            
-          
+
         }
     }
-    
-     public void volverAlMenuDeInicio() {
+
+    public void volverAlMenuDeInicio() {
         tiempo.stop();
         tableroVista.setVisible(false);
-      
-        
+
     }
 
     public void prepararTablero() {
@@ -311,7 +299,7 @@ public class Controlador implements ActionListener {
         }
 
         tableroVista.setLayout(new GridLayout(tablero.getCantidadFilas(), tablero.getCantidadColumnas()));
-        tableroVista.setSize(600, 600);
+        tableroVista.setSize(700, 700);
 
         // LLENAR DE AGUA EL MAPA
         jugador1.setTablero(tablero.getCantidadFilas(), tablero.getCantidadColumnas());
@@ -319,47 +307,43 @@ public class Controlador implements ActionListener {
         jugador1.llenarTableroconAgua(tablero.getCantidadFilas(), tablero.getCantidadColumnas());
         jugador2.llenarTableroconAgua(tablero.getCantidadFilas(), tablero.getCantidadColumnas());
     }
-    
-    
-    public void actualizarPuntajeVista(){
-           puntajeVista.getPlayer1Disparos().setText("Disparos: " + jugador2.getIntentos());
-           puntajeVista.getPlayer1DisparosAgua().setText("Disparos al agua: " + jugador2.getIntentosAgua());
-           puntajeVista.getPlayer1DisparosRepetidos().setText("Disparos Repetidos: " + jugador2.getIntentosRepetidos());
-           puntajeVista.getPlayer1BarcosHundidos().setText("Barcos Hundidos: " + jugador2.getBarcosHundidos());
-         
-           puntajeVista.getPlayer2Disparos().setText("Disparos: " + jugador1.getIntentos());
-           puntajeVista.getPlayer2DisparosAgua().setText("Disparos al agua: " + jugador1.getIntentosAgua());
-           puntajeVista.getPlayer2DisparosRepetidos().setText("Disparos Repetidos: " + jugador1.getIntentosRepetidos());
+
+    public void actualizarPuntajeVista() {
+        puntajeVista.getPlayer1Disparos().setText("Disparos: " + jugador2.getIntentos());
+        puntajeVista.getPlayer1DisparosAgua().setText("Disparos al agua: " + jugador2.getIntentosAgua());
+        puntajeVista.getPlayer1DisparosRepetidos().setText("Disparos Repetidos: " + jugador2.getIntentosRepetidos());
+        puntajeVista.getPlayer1BarcosHundidos().setText("Barcos Hundidos: " + jugador2.getBarcosHundidos());
+
+        puntajeVista.getPlayer2Disparos().setText("Disparos: " + jugador1.getIntentos());
+        puntajeVista.getPlayer2DisparosAgua().setText("Disparos al agua: " + jugador1.getIntentosAgua());
+        puntajeVista.getPlayer2DisparosRepetidos().setText("Disparos Repetidos: " + jugador1.getIntentosRepetidos());
         puntajeVista.getPlayer2BarcosHundidos().setText("Barcos Hundidos: " + jugador1.getBarcosHundidos());
 
     }
-    
-    
-    public void actualizarVistaTiempo(){
-        centesimas_segundos ++;
-            if(centesimas_segundos == 100){
-                segundos++;
-                centesimas_segundos = 0;
-            }
-            if(segundos == 60){
-                minutos ++;
-                segundos = 0;
-            } 
-            if(minutos == 60){
-                horas ++;
-                minutos = 0;
-            }
-            if(horas == 24){
-                horas = 0;
-            }
-            
-        String texto = (horas<=9?"0":"")+horas+":"+(minutos<=9?"0":"")+minutos+":"+(segundos <= 9?"0":"")+segundos+":"+(centesimas_segundos <=9?"0":"")+centesimas_segundos;
-        puntajeVista.getTiempoDePartida().setText("Tiempo de Partida: "+texto);
-    }
-    
-    
-    // MANEJO DE ARCHIVOS
 
+    public void actualizarVistaTiempo() {
+        centesimas_segundos++;
+        if (centesimas_segundos == 100) {
+            segundos++;
+            centesimas_segundos = 0;
+        }
+        if (segundos == 60) {
+            minutos++;
+            segundos = 0;
+        }
+        if (minutos == 60) {
+            horas++;
+            minutos = 0;
+        }
+        if (horas == 24) {
+            horas = 0;
+        }
+
+        String texto = (horas <= 9 ? "0" : "") + horas + ":" + (minutos <= 9 ? "0" : "") + minutos + ":" + (segundos <= 9 ? "0" : "") + segundos + ":" + (centesimas_segundos <= 9 ? "0" : "") + centesimas_segundos;
+        puntajeVista.getTiempoDePartida().setText("Tiempo de Partida: " + texto);
+    }
+
+    // MANEJO DE ARCHIVOS
     public void initArchivoDeGuardado(String fileName) {
         try {
             File myObj = new File("src" + File.separator + fileName + ".txt");
@@ -374,14 +358,13 @@ public class Controlador implements ActionListener {
             e.printStackTrace();
         }
     }
-  
 
-    public void guardarArchivoDeGuardadoPreferencias(String fileName) {
+    public void guardarArchivoDeGuardadoPreferencias() {
         String auxNombres = "";
         auxNombres = jugador1.getNombre() + "," + jugador2.getNombre() + "," + tablero.getCantidadFilas() + "," + tablero.getCantidadColumnas();
 
         try {
-            FileWriter myWriter = new FileWriter("src" + File.separator + fileName + ".txt");
+            FileWriter myWriter = new FileWriter("src" + File.separator + "preferenciasJuego" + ".txt");
             myWriter.write(auxNombres);
             myWriter.close();
             System.out.println("Successfully wrote to the file." + auxNombres);
@@ -391,7 +374,7 @@ public class Controlador implements ActionListener {
         }
 
     }
-    
+
     public void guardarArchivoDeGuardadoHistorial(String resultado) {
         String textoGuardado = "";
         try {
@@ -400,10 +383,9 @@ public class Controlador implements ActionListener {
 
             if (myReader.hasNextLine()) {
                 textoGuardado = myReader.nextLine();
-                
+
                 myReader.close();
-               
-               
+
             }
 
         } catch (FileNotFoundException e) {
@@ -422,22 +404,21 @@ public class Controlador implements ActionListener {
         }
 
     }
-    
-    public void leerArchivoDeGuardadoHistorial(String fileName) {
+
+    public void leerArchivoDeGuardadoHistorial() {
         String[] textoGuardado;
         historialVista.getHistorialLista().removeAll();
         try {
-            File myObj = new File("src" + File.separator + fileName + ".txt");
+            File myObj = new File("src" + File.separator + "historial" + ".txt");
             Scanner myReader = new Scanner(myObj);
 
             if (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
                 textoGuardado = data.split(",");
                 myReader.close();
-               
-                
+
                 historialVista.getHistorialLista().setListData(textoGuardado);
-               
+
             }
 
         } catch (FileNotFoundException e) {
