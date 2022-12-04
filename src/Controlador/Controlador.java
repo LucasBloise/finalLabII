@@ -64,10 +64,10 @@ public class Controlador implements ActionListener {
     ArrayList<JButton> botones = new ArrayList<>();
     EstadoDelJuego estadoDelJuego = EstadoDelJuego.JUGADOR_1_UBICANDO_BARCOS;
     Timer tiempo;
-     int centesimas_segundos = 0;
-     int segundos = 0;
-     int minutos = 0;
-     int horas = 0;
+    int centesimas_segundos = 0;
+    int segundos = 0;
+    int minutos = 0;
+    int horas = 0;
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
     LocalDateTime now = LocalDateTime.now();  
 
@@ -184,31 +184,15 @@ public class Controlador implements ActionListener {
 
             }
              actualizarPuntajeVista();
-        }else{
-          centesimas_segundos ++;
-            if(centesimas_segundos == 100){
-                segundos++;
-                centesimas_segundos = 0;
-            }
-            if(segundos == 60){
-                minutos ++;
-                segundos = 0;
-            } 
-            if(minutos == 60){
-                horas ++;
-                minutos = 0;
-            }
-            if(horas == 24){
-                horas = 0;
-            }
-            
-        String texto = (horas<=9?"0":"")+horas+":"+(minutos<=9?"0":"")+minutos+":"+(segundos <= 9?"0":"")+segundos+":"+(centesimas_segundos <=9?"0":"")+centesimas_segundos;
-        puntajeVista.getTiempoDePartida().setText("Tiempo de Partida: "+texto);
+        }else if(source == tiempo){
+          actualizarVistaTiempo();
         }
         
        
 
     }
+    
+    
 
     public void validarEstadoDelJuego() {
         
@@ -279,6 +263,9 @@ public class Controlador implements ActionListener {
                 if (i == botonX && j == botonY) {
                     
                     switch (tablero[i][j]) {
+                        case BARCO:
+                            boton.setIcon(Utilidades.waterIcon);
+                            break;
                         case AGUA:
                             boton.setIcon(Utilidades.waterIcon);
                             break;
@@ -346,6 +333,32 @@ public class Controlador implements ActionListener {
         puntajeVista.getPlayer2BarcosHundidos().setText("Barcos Hundidos: " + jugador1.getBarcosHundidos());
 
     }
+    
+    
+    public void actualizarVistaTiempo(){
+        centesimas_segundos ++;
+            if(centesimas_segundos == 100){
+                segundos++;
+                centesimas_segundos = 0;
+            }
+            if(segundos == 60){
+                minutos ++;
+                segundos = 0;
+            } 
+            if(minutos == 60){
+                horas ++;
+                minutos = 0;
+            }
+            if(horas == 24){
+                horas = 0;
+            }
+            
+        String texto = (horas<=9?"0":"")+horas+":"+(minutos<=9?"0":"")+minutos+":"+(segundos <= 9?"0":"")+segundos+":"+(centesimas_segundos <=9?"0":"")+centesimas_segundos;
+        puntajeVista.getTiempoDePartida().setText("Tiempo de Partida: "+texto);
+    }
+    
+    
+    // MANEJO DE ARCHIVOS
 
     public void initArchivoDeGuardado(String fileName) {
         try {
@@ -447,10 +460,14 @@ public class Controlador implements ActionListener {
                 for (int i = 0; i < textoGuardado.length; i++) {
                     switch (i) {
                         case 0:
+                            jugador1.setNombre(textoGuardado[0]);
                             menuConfiguracion.getPlayer1NameTextField().setText(textoGuardado[0]);
+                            puntajeVista.getPlayer1Name().setText(textoGuardado[0]);
                             break;
                         case 1:
+                            jugador2.setNombre(textoGuardado[1]);
                             menuConfiguracion.getPlayer2TextField().setText(textoGuardado[1]);
+                            puntajeVista.getPlayer2Name().setText(textoGuardado[1]);
                             break;
                         case 2:
                             menuConfiguracion.getTableRowsTextField().setText(textoGuardado[2]);
