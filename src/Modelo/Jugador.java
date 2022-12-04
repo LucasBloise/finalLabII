@@ -51,12 +51,7 @@ public class Jugador {
     public int getIntentos() {
         return intentos;
     }
-
-    public void setIntentos(int intentos) {
-        this.intentos = intentos;
-    }
-    
-    
+        
     public void llenarTableroconAgua(int cantidadFilas,int CantidadColumnas) {
         for (int i = 0; i < cantidadFilas; i++) {
             for (int j = 0; j < CantidadColumnas; j++) {

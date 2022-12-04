@@ -69,7 +69,7 @@ public class Controlador implements ActionListener {
     int minutos = 0;
     int horas = 0;
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-    LocalDateTime now = LocalDateTime.now();
+    
 
     public void init() {
         // Archivos
@@ -224,11 +224,11 @@ public class Controlador implements ActionListener {
         if (estadoDelJuego != EstadoDelJuego.JUGADOR_1_UBICANDO_BARCOS && estadoDelJuego != EstadoDelJuego.JUGADOR_2_UBICANDO_BARCOS) {
             if (!jugador1.meQuedanBarcos()) {
                 JOptionPane.showMessageDialog(null, "Gano " + jugador2.getNombre());
-                guardarArchivoDeGuardadoHistorial(jugador1.getNombre() + " vs " + jugador2.getNombre() + " gano " + jugador2.getNombre() + " en " + dtf.format(now));
+                guardarArchivoDeGuardadoHistorial(jugador1.getNombre() + " vs " + jugador2.getNombre() + " gano " + jugador2.getNombre() + " en " + dtf.format(Utilidades.now));
                 return true;
             } else if (!jugador2.meQuedanBarcos()) {
                 JOptionPane.showMessageDialog(null, "Gano " + jugador1.getNombre());
-                guardarArchivoDeGuardadoHistorial(jugador1.getNombre() + " vs " + jugador2.getNombre() + " gano " + jugador1.getNombre() + " en " + dtf.format(now));
+                guardarArchivoDeGuardadoHistorial(jugador1.getNombre() + " vs " + jugador2.getNombre() + " gano " + jugador1.getNombre() + " en " + dtf.format(Utilidades.now));
                 return true;
             }
         }

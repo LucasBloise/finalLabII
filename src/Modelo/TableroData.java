@@ -14,7 +14,6 @@ public class TableroData {
         this.cantidadFilas = cantidadFilas;
         this.cantidadColumnas = cantidadColumnas;
     }
-
   
     private static int cantidadFilas = 3;
     private static int cantidadColumnas= 3;
