@@ -5,6 +5,7 @@
 package Recursos;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.swing.ImageIcon;
 import javax.swing.Timer;
 
@@ -14,10 +15,39 @@ import javax.swing.Timer;
  */
 public class Utilidades {
     
-    public static ImageIcon waterIcon = new ImageIcon("/Users/lucasbloise/NetBeansProjects/BatallaNavalLucasBloise/src/Recursos/water.png");
-    public static ImageIcon shipIcon = new ImageIcon("/Users/lucasbloise/NetBeansProjects/BatallaNavalLucasBloise/src/Recursos/ship.png");
-    public static ImageIcon shipDamegeIcon = new ImageIcon("/Users/lucasbloise/NetBeansProjects/BatallaNavalLucasBloise/src/Recursos/shipDamage.png");
-    public static ImageIcon waterSplashIcon = new ImageIcon("/Users/lucasbloise/NetBeansProjects/BatallaNavalLucasBloise/src/Recursos/waterSplash.png");
-    public static LocalDateTime now = LocalDateTime.now();
-    public static Timer tiempo = new Timer(0, null);
+    private static final ImageIcon waterIcon = new ImageIcon("/Users/lucasbloise/NetBeansProjects/BatallaNavalLucasBloise/src/Recursos/water.png");
+    private static final ImageIcon shipIcon = new ImageIcon("/Users/lucasbloise/NetBeansProjects/BatallaNavalLucasBloise/src/Recursos/ship.png");
+    private static final ImageIcon shipDamegeIcon = new ImageIcon("/Users/lucasbloise/NetBeansProjects/BatallaNavalLucasBloise/src/Recursos/shipDamage.png");
+    private static final ImageIcon waterSplashIcon = new ImageIcon("/Users/lucasbloise/NetBeansProjects/BatallaNavalLucasBloise/src/Recursos/waterSplash.png");
+    private static final LocalDateTime now = LocalDateTime.now();
+    private static final Timer tiempo = new Timer(0, null);
+    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+
+    public static ImageIcon getWaterIcon() {
+        return waterIcon;
+    }
+
+    public static ImageIcon getShipIcon() {
+        return shipIcon;
+    }
+
+    public static ImageIcon getShipDamegeIcon() {
+        return shipDamegeIcon;
+    }
+
+    public static ImageIcon getWaterSplashIcon() {
+        return waterSplashIcon;
+    }
+
+    public static LocalDateTime getNow() {
+        return now;
+    }
+
+    public static Timer getTiempo() {
+        return tiempo;
+    }
+
+    public static DateTimeFormatter getDtf() {
+        return dtf;
+    }
 }

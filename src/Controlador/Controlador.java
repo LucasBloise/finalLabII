@@ -21,6 +21,7 @@ import java.awt.event.ActionListener;
 import java.applet.Applet;
 import java.awt.Button;
 import java.awt.Color;
+import java.awt.HeadlessException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -66,7 +67,7 @@ public class Controlador implements ActionListener {
     int segundos = 0;
     int minutos = 0;
     int horas = 0;
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+  
     
 
     public void init() {
@@ -93,7 +94,7 @@ public class Controlador implements ActionListener {
 
         //VISIBILIDAD ACTION LISTENERS
         menuInicial.setVisible(true);
-        Utilidades.tiempo.addActionListener(this);
+        Utilidades.getTiempo().addActionListener(this);
 
     }
 
@@ -102,10 +103,11 @@ public class Controlador implements ActionListener {
         Object source = e.getSource();
 
         if (source == menuInicial.getConfigButton()) {
+            // Manejamos el evento si se apreto el boton de configuracion
             menuInicial.setVisible(false);
             menuConfiguracion.setVisible(true);
         } else if (source == menuConfiguracion.getSaveButton()) {
-            
+            // Manejamos el evento si se apreto el boton de guardado de preferencias
             jugador1.setNombre(menuConfiguracion.getPlayer1NameTextField().getText());
             jugador2.setNombre(menuConfiguracion.getPlayer2TextField().getText());
             tablero.setCantidadFilas(Integer.parseInt(menuConfiguracion.getTableRowsTextField().getText()));
@@ -114,75 +116,83 @@ public class Controlador implements ActionListener {
             menuInicial.setVisible(true);
             menuConfiguracion.setVisible(false);
         } else if (source == menuInicial.getPlayButton()) {
+            // Manejamos el evento si se apreto el boton de iniciar juego
             prepararTablero();
             JOptionPane.showMessageDialog(null, "Turno de ubicar los barcos de " + jugador1.getNombre());
             menuInicial.setVisible(false);
             tableroVista.setVisible(true);
 
         } else if (source == menuInicial.getHistoryButton()) {
+            // Manejamos el evento si se apreto el boton del historial
             leerArchivoDeGuardadoHistorial();
             menuInicial.setVisible(false);
             historialVista.setVisible(true);
         } else if (botones.contains(source)) {
+            // Manejamos el evento si se apreto cualquier boton del tablero
             JButton boton = botones.get(botones.indexOf(source));
             String[] posicionBoton = boton.getName().split(",");
             int botonX = Integer.parseInt(posicionBoton[0]);
             int botonY = Integer.parseInt(posicionBoton[1]);
-            switch (estadoDelJuego) {
-                case JUGADOR_1_UBICANDO_BARCOS:
-                    // UBICAR BARCOS JUGADOR 1
-                    if (jugador1.validarInsertarBarco(botonX, botonY)) {
-                        boton.setIcon(Utilidades.shipIcon);
-                        jugador1.insertarBarco(botonX, botonY);
-                        validarEstadoDelJuego();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Posicion Invalida,ya hay un barco ubicado en esa posicion");
-                    }
-                    break;
-                case JUGADOR_2_UBICANDO_BARCOS:
-                    // UBICAR BARCOS JUGADOR 2
-                    if (jugador2.validarInsertarBarco(botonX, botonY)) {
-                        boton.setIcon(Utilidades.shipIcon);
-                        jugador2.insertarBarco(botonX, botonY);
-                        validarEstadoDelJuego();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Posicion Invalida,ya hay un barco ubicado en esa posicion");
-                    }
-                    break;
-                case ATAQUE_JUGADOR_1:
-                    // ATAQUE BARCO JUGADOR 1
-                    if (jugador2.validarAtaqueRepetido(botonX, botonY)) {
-                        JOptionPane.showMessageDialog(null, "Disparo Repetido");
-
-                    } else if (jugador2.validarAtaqueAgua(botonX, botonY)) {
-                        JOptionPane.showMessageDialog(null, "Disparo al agua");
-                    }
-                    if (jugador2.ejecutarAtaque(botonX, botonY)) {
-                        JOptionPane.showMessageDialog(null, "Hundiste un Barco!");
-                    }
-
-                    validarEstadoDelJuego();
-                    break;
-                case ATAQUE_JUGADOR_2:
-                    // ATAQUE BARCO JUGADOR 2
-                    if (jugador1.validarAtaqueRepetido(botonX, botonY)) {
-                        JOptionPane.showMessageDialog(null, "Disparo Repetido");
-
-                    } else if (jugador1.validarAtaqueAgua(botonX, botonY)) {
-                        JOptionPane.showMessageDialog(null, "Disparo al agua");
-                    }
-                    if (jugador1.ejecutarAtaque(botonX, botonY)) {
-                        JOptionPane.showMessageDialog(null, "Hundiste un Barco!");
-                    }
-                    validarEstadoDelJuego();
-                    break;
-
-            }
+            manejarAtaqueDefensa(botonX, botonY, boton);
             actualizarPuntajeVista();
-        } else if (source == Utilidades.tiempo) {
+        } else if (source == Utilidades.getTiempo()) {
             actualizarVistaTiempo();
         }
 
+    }
+
+    public void manejarAtaqueDefensa(int botonX, int botonY, JButton boton) throws HeadlessException {
+        // Manejamos si es ataque o defensa
+        switch (estadoDelJuego) {
+            case JUGADOR_1_UBICANDO_BARCOS:
+                // UBICAR BARCOS JUGADOR 1
+                if (jugador1.validarInsertarBarco(botonX, botonY)) {
+                    boton.setIcon(Utilidades.getShipIcon());
+                    jugador1.insertarBarco(botonX, botonY);
+                    validarEstadoDelJuego();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Posicion Invalida,ya hay un barco ubicado en esa posicion");
+                }
+                break;
+            case JUGADOR_2_UBICANDO_BARCOS:
+                // UBICAR BARCOS JUGADOR 2
+                if (jugador2.validarInsertarBarco(botonX, botonY)) {
+                    boton.setIcon(Utilidades.getShipIcon());
+                    jugador2.insertarBarco(botonX, botonY);
+                    validarEstadoDelJuego();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Posicion Invalida,ya hay un barco ubicado en esa posicion");
+                }
+                break;
+            case ATAQUE_JUGADOR_1:
+                // ATAQUE BARCO JUGADOR 1
+                if (jugador2.validarAtaqueRepetido(botonX, botonY)) {
+                    JOptionPane.showMessageDialog(null, "Disparo Repetido");
+                    
+                } else if (jugador2.validarAtaqueAgua(botonX, botonY)) {
+                    JOptionPane.showMessageDialog(null, "Disparo al agua");
+                }
+                if (jugador2.ejecutarAtaque(botonX, botonY)) {
+                    JOptionPane.showMessageDialog(null, "Hundiste un Barco!");
+                }
+                
+                validarEstadoDelJuego();
+                break;
+            case ATAQUE_JUGADOR_2:
+                // ATAQUE BARCO JUGADOR 2
+                if (jugador1.validarAtaqueRepetido(botonX, botonY)) {
+                    JOptionPane.showMessageDialog(null, "Disparo Repetido");
+                    
+                } else if (jugador1.validarAtaqueAgua(botonX, botonY)) {
+                    JOptionPane.showMessageDialog(null, "Disparo al agua");
+                }
+                if (jugador1.ejecutarAtaque(botonX, botonY)) {
+                    JOptionPane.showMessageDialog(null, "Hundiste un Barco!");
+                }
+                validarEstadoDelJuego();
+                break;
+                
+        }
     }
 
     public void validarEstadoDelJuego() {
@@ -197,7 +207,7 @@ public class Controlador implements ActionListener {
                 return;
             } else if (jugador2.termineDePosicionarBarcos() && estadoDelJuego.equals(EstadoDelJuego.JUGADOR_2_UBICANDO_BARCOS)) {
                 JOptionPane.showMessageDialog(null, "Empieza el ataque entre jugadores");
-                Utilidades.tiempo.start();
+                Utilidades.getTiempo().start();
                 puntajeVista.setVisible(true);
                 JOptionPane.showMessageDialog(null, "Le toca atacar a " + jugador1.getNombre());
                 limpiarMapa();
@@ -222,11 +232,11 @@ public class Controlador implements ActionListener {
         if (estadoDelJuego != EstadoDelJuego.JUGADOR_1_UBICANDO_BARCOS && estadoDelJuego != EstadoDelJuego.JUGADOR_2_UBICANDO_BARCOS) {
             if (!jugador1.meQuedanBarcos()) {
                 JOptionPane.showMessageDialog(null, "Gano " + jugador2.getNombre());
-                guardarArchivoDeGuardadoHistorial(jugador1.getNombre() + " vs " + jugador2.getNombre() + " gano " + jugador2.getNombre() + " en " + dtf.format(Utilidades.now));
+                guardarArchivoDeGuardadoHistorial(jugador1.getNombre() + " vs " + jugador2.getNombre() + " gano " + jugador2.getNombre() + " en " + Utilidades.getDtf().format(Utilidades.getNow()));
                 return true;
             } else if (!jugador2.meQuedanBarcos()) {
                 JOptionPane.showMessageDialog(null, "Gano " + jugador1.getNombre());
-                guardarArchivoDeGuardadoHistorial(jugador1.getNombre() + " vs " + jugador2.getNombre() + " gano " + jugador1.getNombre() + " en " + dtf.format(Utilidades.now));
+                guardarArchivoDeGuardadoHistorial(jugador1.getNombre() + " vs " + jugador2.getNombre() + " gano " + jugador1.getNombre() + " en " + Utilidades.getDtf().format(Utilidades.getNow()));
                 return true;
             }
         }
@@ -235,7 +245,7 @@ public class Controlador implements ActionListener {
 
     public void limpiarMapa() {
         for (JButton boton : botones) {
-            boton.setIcon(Utilidades.waterIcon);
+            boton.setIcon(Utilidades.getWaterIcon());
         }
     }
 
@@ -252,16 +262,16 @@ public class Controlador implements ActionListener {
 
                         switch (tablero[i][j]) {
                             case BARCO:
-                                boton.setIcon(Utilidades.waterIcon);
+                                boton.setIcon(Utilidades.getWaterIcon());
                                 break;
                             case AGUA:
-                                boton.setIcon(Utilidades.waterIcon);
+                                boton.setIcon(Utilidades.getWaterIcon());
                                 break;
                             case BARCO_HUNDIDO:
-                                boton.setIcon(Utilidades.shipDamegeIcon);
+                                boton.setIcon(Utilidades.getShipDamegeIcon());
                                 break;
                             case DISPARO_REPETIDO:
-                                boton.setIcon(Utilidades.waterSplashIcon);
+                                boton.setIcon(Utilidades.getWaterSplashIcon());
                                 break;
                         }
                     }
@@ -272,7 +282,7 @@ public class Controlador implements ActionListener {
     }
 
     public void volverAlMenuDeInicio() {
-        Utilidades.tiempo.stop();
+        Utilidades.getTiempo().stop();
         tableroVista.setVisible(false);
 
     }
@@ -285,7 +295,7 @@ public class Controlador implements ActionListener {
         for (int i = 0; i < (tablero.getCantidadFilas()); i++) {
             for (int j = 0; j < tablero.getCantidadColumnas(); j++) {
                 JButton botonTemporal = new JButton();
-                botonTemporal.setIcon(Utilidades.waterIcon);
+                botonTemporal.setIcon(Utilidades.getWaterIcon());
                 botonTemporal.setName(i + "," + j);
                 botones.add(botonTemporal);
             }
