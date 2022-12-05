@@ -6,6 +6,7 @@ package Recursos;
 
 import java.time.LocalDateTime;
 import javax.swing.ImageIcon;
+import javax.swing.Timer;
 
 /**
  *
@@ -18,4 +19,5 @@ public class Utilidades {
     public static ImageIcon shipDamegeIcon = new ImageIcon("/Users/lucasbloise/NetBeansProjects/BatallaNavalLucasBloise/src/Recursos/shipDamage.png");
     public static ImageIcon waterSplashIcon = new ImageIcon("/Users/lucasbloise/NetBeansProjects/BatallaNavalLucasBloise/src/Recursos/waterSplash.png");
     public static LocalDateTime now = LocalDateTime.now();
+    public static Timer tiempo = new Timer(0, null);
 }

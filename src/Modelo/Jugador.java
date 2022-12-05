@@ -36,9 +36,6 @@ public class Jugador {
         return puntaje;
     }
 
-    public void setPuntaje(int puntaje) {
-        this.puntaje = puntaje;
-    }
     
     public PosicionTablero[][] getTablero() {
         return tablero;
@@ -51,7 +48,8 @@ public class Jugador {
     public int getIntentos() {
         return intentos;
     }
-        
+    
+    
     public void llenarTableroconAgua(int cantidadFilas,int CantidadColumnas) {
         for (int i = 0; i < cantidadFilas; i++) {
             for (int j = 0; j < CantidadColumnas; j++) {
@@ -147,15 +145,8 @@ public class Jugador {
         return intentosAgua;
     }
 
-    public void setIntentosAgua(int intentosAgua) {
-        this.intentosAgua = intentosAgua;
-    }
-
     public int getIntentosRepetidos() {
         return intentosRepetidos;
     }
 
-    public void setIntentosRepetidos(int intentosRepetidos) {
-        this.intentosRepetidos = intentosRepetidos;
-    }
 }

@@ -41,7 +41,7 @@ import javax.swing.Timer;
  */
 public class Controlador implements ActionListener {
 
-    public Controlador(MenuInicial menuInicial, MenuConfiguracion menuConfiguracion, Tablero tableroVista, PuntajeVista puntajeVista, HistorialVista historialVista, Jugador jugador1, Jugador jugador2, TableroData tablero, Timer timer) {
+    public Controlador(MenuInicial menuInicial, MenuConfiguracion menuConfiguracion, Tablero tableroVista, PuntajeVista puntajeVista, HistorialVista historialVista, Jugador jugador1, Jugador jugador2, TableroData tablero) {
         this.menuInicial = menuInicial;
         this.menuConfiguracion = menuConfiguracion;
         this.tableroVista = tableroVista;
@@ -50,7 +50,6 @@ public class Controlador implements ActionListener {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
         this.tablero = tablero;
-        this.tiempo = timer;
     }
 
     MenuInicial menuInicial;
@@ -63,7 +62,6 @@ public class Controlador implements ActionListener {
     TableroData tablero;
     ArrayList<JButton> botones = new ArrayList<>();
     EstadoDelJuego estadoDelJuego = EstadoDelJuego.JUGADOR_1_UBICANDO_BARCOS;
-    Timer tiempo;
     int centesimas_segundos = 0;
     int segundos = 0;
     int minutos = 0;
@@ -95,7 +93,7 @@ public class Controlador implements ActionListener {
 
         //VISIBILIDAD ACTION LISTENERS
         menuInicial.setVisible(true);
-        tiempo.addActionListener(this);
+        Utilidades.tiempo.addActionListener(this);
 
     }
 
@@ -107,6 +105,7 @@ public class Controlador implements ActionListener {
             menuInicial.setVisible(false);
             menuConfiguracion.setVisible(true);
         } else if (source == menuConfiguracion.getSaveButton()) {
+            
             jugador1.setNombre(menuConfiguracion.getPlayer1NameTextField().getText());
             jugador2.setNombre(menuConfiguracion.getPlayer2TextField().getText());
             tablero.setCantidadFilas(Integer.parseInt(menuConfiguracion.getTableRowsTextField().getText()));
@@ -121,12 +120,11 @@ public class Controlador implements ActionListener {
             tableroVista.setVisible(true);
 
         } else if (source == menuInicial.getHistoryButton()) {
-
+            leerArchivoDeGuardadoHistorial();
             menuInicial.setVisible(false);
             historialVista.setVisible(true);
         } else if (botones.contains(source)) {
             JButton boton = botones.get(botones.indexOf(source));
-
             String[] posicionBoton = boton.getName().split(",");
             int botonX = Integer.parseInt(posicionBoton[0]);
             int botonY = Integer.parseInt(posicionBoton[1]);
@@ -181,7 +179,7 @@ public class Controlador implements ActionListener {
 
             }
             actualizarPuntajeVista();
-        } else if (source == tiempo) {
+        } else if (source == Utilidades.tiempo) {
             actualizarVistaTiempo();
         }
 
@@ -199,7 +197,7 @@ public class Controlador implements ActionListener {
                 return;
             } else if (jugador2.termineDePosicionarBarcos() && estadoDelJuego.equals(EstadoDelJuego.JUGADOR_2_UBICANDO_BARCOS)) {
                 JOptionPane.showMessageDialog(null, "Empieza el ataque entre jugadores");
-                tiempo.start();
+                Utilidades.tiempo.start();
                 puntajeVista.setVisible(true);
                 JOptionPane.showMessageDialog(null, "Le toca atacar a " + jugador1.getNombre());
                 limpiarMapa();
@@ -274,7 +272,7 @@ public class Controlador implements ActionListener {
     }
 
     public void volverAlMenuDeInicio() {
-        tiempo.stop();
+        Utilidades.tiempo.stop();
         tableroVista.setVisible(false);
 
     }
@@ -309,6 +307,7 @@ public class Controlador implements ActionListener {
     }
 
     public void actualizarPuntajeVista() {
+        // se encarga de actualizar puntaje de la vista
         puntajeVista.getPlayer1Disparos().setText("Disparos: " + jugador2.getIntentos());
         puntajeVista.getPlayer1DisparosAgua().setText("Disparos al agua: " + jugador2.getIntentosAgua());
         puntajeVista.getPlayer1DisparosRepetidos().setText("Disparos Repetidos: " + jugador2.getIntentosRepetidos());
@@ -322,6 +321,7 @@ public class Controlador implements ActionListener {
     }
 
     public void actualizarVistaTiempo() {
+    // Se encarga de actualizar el tiempo y su respectiva vista
         centesimas_segundos++;
         if (centesimas_segundos == 100) {
             segundos++;
@@ -348,13 +348,13 @@ public class Controlador implements ActionListener {
         try {
             File myObj = new File("src" + File.separator + fileName + ".txt");
             if (myObj.createNewFile()) {
-                System.out.println("File created: " + myObj.getName());
+                System.out.println("Archivo creado: " + myObj.getName());
             } else {
                 leerArchivoDeGuardadoPreferencias();
-                System.out.println("File already exists.");
+                System.out.println("El archivo ya existe.");
             }
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.out.println("Sucedioo un error al iniciar el archivo.");
             e.printStackTrace();
         }
     }
@@ -367,9 +367,9 @@ public class Controlador implements ActionListener {
             FileWriter myWriter = new FileWriter("src" + File.separator + "preferenciasJuego" + ".txt");
             myWriter.write(auxNombres);
             myWriter.close();
-            System.out.println("Successfully wrote to the file." + auxNombres);
+            System.out.println("Guardado existosamente:." + auxNombres);
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.out.println("Sucedio un error al guardar las preferencias.");
             e.printStackTrace();
         }
 
@@ -389,7 +389,7 @@ public class Controlador implements ActionListener {
             }
 
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
+            System.out.println("Sucedio un error al guardar el historial.");
             e.printStackTrace();
         }
 
@@ -397,9 +397,9 @@ public class Controlador implements ActionListener {
             FileWriter myWriter = new FileWriter("src" + File.separator + "historial" + ".txt");
             myWriter.write(textoGuardado + "," + resultado);
             myWriter.close();
-            System.out.println("Successfully wrote to the file." + resultado);
+            System.out.println("Guardado existosamente:" + resultado);
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.out.println("Sucedio un error al guardar el historial.");
             e.printStackTrace();
         }
 
@@ -422,7 +422,7 @@ public class Controlador implements ActionListener {
             }
 
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
+            System.out.println("Sucedio un error al leer el historial.");
             e.printStackTrace();
         }
     }
@@ -461,10 +461,25 @@ public class Controlador implements ActionListener {
 
                     }
                 }
+            }else{
+                // Si no hay nada guardado , seteamos valores por defecto
+                // Jugador 1
+                jugador1.setNombre("Jugador 1");
+                menuConfiguracion.getPlayer1NameTextField().setText("Jugador 1");
+                puntajeVista.getPlayer1Name().setText("Jugador 1");
+                 // Jugador 2
+                jugador2.setNombre("Jugador 2");
+                menuConfiguracion.getPlayer2TextField().setText("Jugador 2");
+                puntajeVista.getPlayer2Name().setText("Jugador 2");
+                // Tablero
+                menuConfiguracion.getTableRowsTextField().setText("4");
+                tablero.setCantidadFilas(4);
+                menuConfiguracion.getColumnsTableTextField().setText("4");
+                tablero.setCantidadColumnas(4);
             }
 
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
+            System.out.println("Sucedio un error al leer las preferencias.");
             e.printStackTrace();
         }
     }

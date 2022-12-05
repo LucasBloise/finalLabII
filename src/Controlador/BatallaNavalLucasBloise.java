@@ -32,9 +32,8 @@ public class BatallaNavalLucasBloise {
         Jugador jugador1 = new Jugador("Lucas", 0);
         Jugador jugador2 = new Jugador("Agus", 0);
         TableroData tablero = new TableroData(0, 0);
-        Timer timer = new Timer(0, null);
 
-        Controlador controlador = new Controlador(menuInicial, menuConfiguracion, tableroVista, puntajeVista, historialVista, jugador1, jugador2, tablero, timer);
+        Controlador controlador = new Controlador(menuInicial, menuConfiguracion, tableroVista, puntajeVista, historialVista, jugador1, jugador2, tablero);
         controlador.init();
     }
 
