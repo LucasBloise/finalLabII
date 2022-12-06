@@ -14,27 +14,19 @@ import Vista.MenuConfiguracion;
 import Vista.MenuInicial;
 import Vista.PuntajeVista;
 import Vista.Tablero;
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.applet.Applet;
-import java.awt.Button;
-import java.awt.Color;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.Timer;
+
 
 /**
  *
@@ -107,11 +99,7 @@ public class Controlador implements ActionListener {
             menuInicial.setVisible(false);
             menuConfiguracion.setVisible(true);
         } else if (source == menuConfiguracion.getSaveButton()) {
-            // Manejamos el evento si se apreto el boton de guardado de preferencias
-            jugador1.setNombre(menuConfiguracion.getPlayer1NameTextField().getText());
-            jugador2.setNombre(menuConfiguracion.getPlayer2TextField().getText());
-            tablero.setCantidadFilas(Integer.parseInt(menuConfiguracion.getTableRowsTextField().getText()));
-            tablero.setCantidadColumnas(Integer.parseInt(menuConfiguracion.getColumnsTableTextField().getText()));
+            guardarValidarDatos();
             guardarArchivoDeGuardadoPreferencias();
             menuInicial.setVisible(true);
             menuConfiguracion.setVisible(false);
@@ -140,6 +128,8 @@ public class Controlador implements ActionListener {
         }
 
     }
+
+    
 
     public void manejarAtaqueDefensa(int botonX, int botonY, JButton boton) throws HeadlessException {
         // Manejamos si es ataque o defensa
@@ -241,6 +231,21 @@ public class Controlador implements ActionListener {
             }
         }
         return false;
+    }
+    
+    public void guardarValidarDatos() throws HeadlessException, NumberFormatException {
+        // Manejamos el evento si se apreto el boton de guardado de preferencias
+        if (Integer.parseInt(menuConfiguracion.getTableRowsTextField().getText()) < 2 || Integer.parseInt(menuConfiguracion.getColumnsTableTextField().getText()) < 2) {
+            JOptionPane.showMessageDialog(null, "Filas o Columnas no pueden ser menor a 2" );
+            tablero.setCantidadFilas(2);
+            tablero.setCantidadColumnas(2);
+        } else {
+            tablero.setCantidadFilas(Integer.parseInt(menuConfiguracion.getTableRowsTextField().getText()));
+            tablero.setCantidadColumnas(Integer.parseInt(menuConfiguracion.getColumnsTableTextField().getText()));
+        }
+        
+        jugador1.setNombre(menuConfiguracion.getPlayer1NameTextField().getText());
+        jugador2.setNombre(menuConfiguracion.getPlayer2TextField().getText());
     }
 
     public void limpiarMapa() {

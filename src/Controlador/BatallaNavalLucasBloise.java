@@ -11,7 +11,7 @@ import Vista.MenuConfiguracion;
 import Vista.MenuInicial;
 import Vista.PuntajeVista;
 import Vista.Tablero;
-import javax.swing.Timer;
+
 
 /**
  *
